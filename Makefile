@@ -1,5 +1,5 @@
 PROGRAM := screw
-SOURCES := $(shell find . -type f -name '*.go')
+SOURCES := $(shell find ./cmd ./internal -type f -name '*.go')
 CMD_DIR := cmd
 BIN_DIR := .bin
 

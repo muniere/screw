@@ -1,0 +1,91 @@
+#compdef screw
+
+function __screw_subcommands() {
+  local subcommands=(
+    'index:Index URIs in page'
+    'crawl:Index and download URIs in page'
+    'help:Show help message'
+  )
+
+  _describe "subommands" subcommands
+}
+
+function __screw_arguments() {
+  subcommand="$1"
+
+  case $subcommand in
+    (index)
+      __screw_index && ret=0
+      ;;
+    (crawl)
+      __screw_crawl && ret=0
+      ;;
+  esac
+}
+
+function __screw_index() {
+  local focus=$(__screw_focus)
+  _arguments -C \
+    "($focus)--href-text[Focus on hrefs of texts]" \
+    "($focus)--href-image[Focus on hrefs of images]" \
+    "($focus)--image[Focus on images]" \
+    "($focus)--script[Focus on scripts]" \
+    "(--grep)--grep=[Grep contents by URI with regex]::" \
+    "(-v --verbose)"{-v,--verbose}"[Show verbose messages]" \
+    "(-h --help)"{-h,--help}"[Show help message]" \
+    '(-)*::URL:_urls'
+}
+
+function __screw_crawl() {
+  local focus=$(__screw_focus)
+  _arguments -C \
+    "($focus)--href-text[Focus on hrefs of texts]" \
+    "($focus)--href-image[Focus on hrefs of images]" \
+    "($focus)--image[Focus on images]" \
+    "($focus)--script[Focus on scripts]" \
+    "(-P --prefix)"{-P=,--prefix=}"[Directory to download contents]:prefix:_directories" \
+    "(-c --concurrency)"{-c=,--concurrency=}"[Concurrency of download]::" \
+    "(--overwrite)--overwrite[Overwrite existing contents]" \
+    "(--grep)--grep=[Grep contents by URI with regex]::" \
+    "(-n --dry-run)"{-n,--dry-run}"[Do not execute actually]" \
+    "(-v --verbose)"{-v,--verbose}"[Show verbose messages]" \
+    "(-h --help)"{-h,--help}"[Show help message]" \
+    '(-)*::URL:_urls'
+    
+}
+
+function __screw_focus() {
+  local focus=(
+    '--href-text'
+    '--href-image'
+    '--image'
+    '--script'
+  )
+
+  echo $focus
+}
+
+function _screw() {
+  local context curcontext="$curcontext" state line
+  typeset -A opt_args
+  local ret=1
+
+  _arguments -C \
+    '1: :->subcommands' \
+    '*:: :->arguments' \
+    && ret=0
+
+  case $state in
+    (subcommands)
+      __screw_subcommands && ret=0 
+      ;;
+    (arguments)
+      __screw_arguments $words[1] && ret=0
+      ;;
+  esac
+  
+  return ret
+}
+
+# vim: ft=zsh sw=2 ts=2 sts=2
+

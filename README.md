@@ -24,3 +24,7 @@ $ git clone git@github.com:muniere/screw.git
 $ cd screw
 $ make && make install
 ```
+
+## License
+
+This software is licensed under MIT.

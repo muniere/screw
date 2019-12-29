@@ -1,9 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"github.com/muniere/screw/internal/app/screw"
+	"github.com/muniere/screw/internal/pkg/sys"
 )
 
 func main() {
-	fmt.Println("Hello, World")
+	cmd := screw.NewCommand()
+	err := cmd.Execute()
+	sys.CheckError(err)
 }
